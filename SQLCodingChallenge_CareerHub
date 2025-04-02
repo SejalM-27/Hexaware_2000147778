@@ -1,0 +1,202 @@
+Name-Sejal Sanjay More
+Employee ID-2000147778
+DA Mavericks Batch 4 
+
+create database CareerHub
+use Careerhub
+
+create table Companies(CompanyID int Primary key,
+CompanyName varchar(50),
+Location varchar(50))
+
+create table Jobs( JobID int Primary Key,
+CompanyID int,
+JobTitle varchar(50),
+JobLocation varchar(50),
+Salary int,
+JobType varchar(50),
+PostedDate datetime,
+Foreign key(CompanyID) References companies(CompanyID))
+
+create table Applicants( ApplicantID int Primary key,
+FirstName varchar(20),
+LastName varchar(20),
+Email varchar(30),
+Phone varchar(20),
+Resume TEXT)
+
+create table Applications( ApplicationID int primary key,
+JobID int,
+ApplicantID int,
+ApplicationDate datetime,
+CoverLetter Text,
+Foreign key(JobID) References Jobs(JobID),
+Foreign key(ApplicantID) References Applicants(ApplicantID))
+
+insert into Companies(CompanyID, CompanyName, Location) values (1,'Hexaware','Mumbai')
+insert into Companies(CompanyID, CompanyName, Location) values (2,'Google','Banglore')
+insert into Companies(CompanyID, CompanyName, Location) values (3,'cloud4C','Hyderabad')
+insert into Companies(CompanyID, CompanyName, Location) values (4,'RhealSoft','Pune')
+insert into Companies(CompanyID, CompanyName, Location) values (5,'Xperate','Mumbai')
+
+insert into Jobs(JobId,CompanyID,JobTitle,JobLocation,Salary,JobType,PostedDate) values (101,1,'Developer','Mumbai',150000,'Full-time','2025-03-20')
+insert into Jobs(JobId,CompanyID,JobTitle,JobLocation,Salary,JobType,PostedDate) values (102,2,'Tester','Banglore',40000,'Part-time','2024-05-10')
+insert into Jobs(JobId,CompanyID,JobTitle,JobLocation,Salary,JobType,PostedDate) values (103,3,'Developer','Hyderabad',700000,'Contract','2023-09-08')
+insert into Jobs(JobId,CompanyID,JobTitle,JobLocation,Salary,JobType,PostedDate) values (104,4,'HR','Pune',90000,'Contract','2025-01-01')
+insert into Jobs(JobId,CompanyID,JobTitle,JobLocation,Salary,JobType,PostedDate) values (105,5,'Database Engineer','Mumbai',140000,'Part-time','2019-10-10')
+insert into Jobs(JobId,CompanyID,JobTitle,JobLocation,Salary,JobType,PostedDate) values (106,4,' Sr.Database Engineer','Pune',200000,'Full-time','2022-05-05')
+
+drop table Applicants
+insert into Applicants values(11,'Sejal','More','sejalm27@gmail.com','7378850045','Resume text...')
+insert into Applicants values(12,'Siddhi','Phadnis','sp27@gmail.com','9595187711','Resume text...')
+insert into Applicants values(13,'siddhant','chougule','siddhant16@gmail.com','9595187711','Resume text...')
+
+insert into Applications values(99,101,11,'2025-03-27','I am excited about this job')
+insert into Applications values(98,102,12,'2025-01-27','Looking forward')
+insert into Applications values(97,103,13,'2025-01-01','I would love to join the company')
+
+#1. Provide a SQL script that initializes the database for the Job Board scenario “CareerHub”. 
+create database if not exists CareerHub
+use CareerHub
+
+#2. Create tables for Companies, Jobs, Applicants and Applications. 
+create table Companies(CompanyID int Primary key,
+CompanyName varchar(50),
+Location varchar(50))
+
+create table Jobs( JobID int Primary Key,
+CompanyID int,
+JobTitle varchar(50),
+JobLocation varchar(50),
+Salary int,
+JobType varchar(50),
+PostedDate datetime,
+Foreign key(CompanyID) References companies(CompanyID))
+
+create table Applicants( ApplicantID int Primary key,
+FirstName varchar(20),
+LastName varchar(20),
+Email varchar(30),
+Phone varchar(20),
+Resume TEXT)
+
+create table Applications( ApplicationID int primary key,
+JobID int,
+ApplicantID int,
+ApplicationDate datetime,
+CoverLetter Text,
+Foreign key(JobID) References Jobs(JobID),
+Foreign key(ApplicantID) References Applicants(ApplicantID))
+
+#3. Define appropriate primary keys, foreign keys, and constraints. 
+create table Companies(CompanyID int Primary key,
+CompanyName varchar(50),
+Location varchar(50))
+
+create table Jobs( JobID int Primary Key,
+CompanyID int,
+JobTitle varchar(50),
+JobLocation varchar(50),
+Salary int,
+JobType varchar(50),
+PostedDate datetime,
+Foreign key(CompanyID) References companies(CompanyID))
+
+create table Applicants( ApplicantID int Primary key,
+FirstName varchar(20),
+LastName varchar(20),
+Email varchar(30),
+Phone varchar(20),
+Resume TEXT)
+
+create table Applications( ApplicationID int primary key,
+JobID int,
+ApplicantID int,
+ApplicationDate datetime,
+CoverLetter Text,
+Foreign key(JobID) References Jobs(JobID),
+Foreign key(ApplicantID) References Applicants(ApplicantID))
+
+#4.Ensure the script handles potential errors, such as if the database or tables already exist.
+create database if not exists CareerHub
+create table if not exists Companies
+create table if not exists Jobs
+create table if not exists Applications
+create table if not exists Applicants
+
+#5. . Write an SQL query to count the number of applications received for each job listing in the "Jobs" table. Display the job title and the corresponding application count. Ensure that it lists all jobs, even if they have no applications.
+select j.jobTitle,count(a.ApplicationID) from jobs j left outer join Applications a on j.JobID=a.jobID
+group by j.jobID,j.jobTitle
+
+#6.Develop an SQL query that retrieves job listings from the "Jobs" table within a specified salary range. Allow parameters for the minimum and maximum #salary values. Display the job title, company name, location, and salary for each matching job.
+select j.JobTitle,c.CompanyName,j.JobLocation,j.Salary from Jobs j inner join Companies c on j.CompanyID=c.CompanyID
+where j.Salary between (select min(salary) from jobs)and (select max(salary) from jobs)
+
+#7.Write an SQL query that retrieves the job application history for a specific applicant. Allow a parameter for the ApplicantID, and return a result set #with the job titles, company names, and application dates for all the jobs the applicant has applied to
+select j.jobTitle,c.CompanyName,a.ApplicationDate from Applications a inner join Jobs j using (JobID)
+join Companies c using (CompanyID)
+where a.ApplicantID=11
+
+#8. Create an SQL query that calculates and displays the average salary offered by all companies for job listings in the "Jobs" table. Ensure that the query filters out jobs with a salary of zero.
+select avg(Salary) from Jobs
+where Salary>0
+
+#9. Write an SQL query to identify the company that has posted the most job listings. Display the company name along with the count of job listings they #have posted. Handle ties if multiple companies have the same maximum count
+Select c.CompanyName,count(j.JobID) from Companies c inner join Jobs j using(CompanyID)
+group by c.CompanyName
+order by count(j.JobID) desc 
+LIMIT 1
+
+#10. Find the applicants who have applied for positions in companies located in 'CityX' and have at least 3 years of experience.
+select a.ApplicantId,a.FirstName,a.Lastname,a.Email from Applicants a inner join Applications aa on a.ApplicantID=aa.ApplicantID
+join Jobs j on aa.JobID=j.JobID
+join Companies c on j.CompanyID=c.CompanyID
+where c.location='Mumbai'
+
+#11. Retrieve a list of distinct job titles with salaries between $60,000 and $80,000.
+select distinct JobTitle from Jobs
+where salary between 60000 and 800000
+
+select distinct JobTitle from Jobs
+where salary between 140000 and 700000
+
+#12.Find the jobs that have not received any applications.
+Select j.JobTitle from Jobs j inner join Applications a using (JobID)
+where a.ApplicationID is null
+
+#13. Retrieve a list of job applicants along with the companies they have applied to and the positions they have applied for
+select j.JobTitle,a.ApplicantID,a.FirstName,a.LastName,a.Email,c.CompanyName
+from Applicants a inner join Applications ap using(ApplicantID)
+inner join Jobs j using (JobID)
+inner join Companies c using (CompanyID)
+
+#14. Retrieve a list of companies along with the count of jobs they have posted, even if they have not received any applications.
+select c.CompanyName,count(j.JobID) from Companies c left outer join Jobs j using (CompanyID)
+group by CompanyName
+
+#15. List all applicants along with the companies and positions they have applied for, including those who have not applied.
+select a.ApplicantID,c.CompanyName,j.JobTitle from Applicants a left outer join Applications ap using(ApplicantID)
+left outer join Jobs j using(JobID)
+left outer join Companies c using (CompanyID)
+
+#16.Find companies that have posted jobs with a salary higher than the average salary of all jobs.
+select c.CompanyName from Companies c inner join Jobs j using (CompanyID)
+where j.salary>(Select avg(Salary) from Jobs)
+
+#17.Display a list of applicants with their names and a concatenated string of their city and state.
+Select concat(FirstName,' ',LastName,' ',Location) from Applicants ap join Applications a using(ApplicantID)
+join Jobs j using(JobID)
+join Companies c using (CompanyID) 
+
+#18. Retrieve a list of jobs with titles containing either 'Developer' or 'Engineer'.
+Select JobTitle from Jobs
+where JobTitle like'%Engineer%' or JobTitle like'%Developer%'
+
+#19. Retrieve a list of applicants and the jobs they have applied for, including those who have not applied and jobs without applicants.
+select a.Firstname,a.Lastname from Applicants a
+left outer join Applications ap using (ApplicantID)
+left outer join Jobs j using(JobID)
+
+#20.List all combinations of applicants and companies where the company is in a specific city and the applicant has more than 2 years of experience. For #example: city=Chennai
+Select a.FirstName,a.LastName,c.CompanyName from Applicants a cross join Companies c 
+where location='Pune'
